@@ -71,7 +71,7 @@ jobs:
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .' json/tmp-lin.json > json/latest-version-lin.json
+          ]' json/tmp-lin.json > json/latest-version-lin.json
           cp json/latest-version-lin.json site/public/launcher/
 
       - name: new ver-win
@@ -86,7 +86,7 @@ jobs:
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .' json/tmp-win.json > json/latest-version-win.json
+          ]' json/tmp-win.json > json/latest-version-win.json
           cp json/latest-version-win.json site/public/launcher/
 
       - name: new ver-mac
@@ -101,7 +101,7 @@ jobs:
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .' json/tmp-mac.json > json/latest-version-mac.json
+          ]' json/tmp-mac.json > json/latest-version-mac.json
           cp json/latest-version-mac.json site/public/launcher/
 
       - name: push to website
