@@ -24,13 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
 
       - name: copy
         run: |
-          git clone https://x-access-token:${{ secrets.WEBSITE_TOKEN }}@github.com/TheUnknownGroup/UKMCL.git lau
           git clone https://x-access-token:${{ secrets.WEBSITE_TOKEN }}@github.com/TheUnknownGroup/theunknowngroup.github.io.git site
           cd site/public/
 
@@ -45,19 +41,17 @@ jobs:
       - name: manual add
         if: ${{ contains(github.event.head_commit.message, '[man]' ) }}
         run:
-          cd lau/
           mv json/tmp-lin.json json/latest-version-lin.json
           
           mv json/tmp-win.json json/latest-version-win.json
           
           mv json/tmp-mac.json json/latest-version-mac.json
           
-          cp json/latest-version-lin.json ${{ github.workspace }}/site/public/launcher/
+          cp json/latest-version-lin.json site/public/launcher/
           
-          cp json/latest-version-win.json ${{ github.workspace }}/site/public/launcher/
+          cp json/latest-version-win.json site/public/launcher/
           
-          cp json/latest-version-mac.json ${{ github.workspace }}/site/public/launcher/
-          cd ${{ github.workspace }}
+          cp json/latest-version-mac.json site/public/launcher/
 
       - name: get jq
         if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
@@ -68,7 +62,6 @@ jobs:
       - name: new ver-lin
         if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
         run: |
-          cd lau/
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-Linux-Installer-en_US+${{ env.file_ver }}.deb" \
@@ -79,13 +72,11 @@ jobs:
               "download_url": $url
             }
           ] + .' json/tmp-lin.json > json/latest-version-lin.json
-          cp json/latest-version-lin.json ${{ github.workspace }}/site/public/launcher/
-          cd ${{ github.workspace }}
+          cp json/latest-version-lin.json site/public/launcher/
 
       - name: new ver-win
         if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
         run: |
-          cd lau/
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-Windows-Installer-en_US.exe" \
@@ -96,13 +87,11 @@ jobs:
               "download_url": $url
             }
           ] + .' json/tmp-win.json > json/latest-version-win.json
-          cp json/latest-version-win.json ${{ github.workspace }}/site/public/launcher/
-          cd ${{ github.workspace }}
+          cp json/latest-version-win.json site/public/launcher/
 
       - name: new ver-mac
         if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
         run: |
-          cd lau/
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-macOS-en_US+${{ env.file_ver }}.dmg" \
@@ -113,8 +102,7 @@ jobs:
               "download_url": $url
             }
           ] + .' json/tmp-mac.json > json/latest-version-mac.json
-          cp json/latest-version-mac.json ${{ github.workspace }}/site/public/launcher/
-          cd ${{ github.workspace }}
+          cp json/latest-version-mac.json site/public/launcher/
 
       - name: push to website
         run: |
@@ -129,12 +117,10 @@ jobs:
             git commit -m "${{ env.commit_msg }}"
             git push
           fi
-          cd ${{ github.workspace }}
 
       - name: push here
         if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
         run: |
-          cd lau/
           mv json/latest-version-lin.json json/tmp-lin.json
           mv json/latest-version-win.json json/tmp-win.json
           mv json/latest-version-mac.json json/tmp-mac.json
