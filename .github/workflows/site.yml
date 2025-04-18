@@ -52,11 +52,11 @@ jobs:
           
           mv json/tmp-mac.json json/latest-version-mac.json
           
-          cp json/latest-version-lin.json site/public/launcher/
+          cp json/latest-version-lin.json ${{ github.workspace }}/site/public/launcher/
           
-          cp json/latest-version-win.json site/public/launcher/
+          cp json/latest-version-win.json ${{ github.workspace }}/site/public/launcher/
           
-          cp json/latest-version-mac.json site/public/launcher/
+          cp json/latest-version-mac.json ${{ github.workspace }}/site/public/launcher/
           cd ${{ github.workspace }}
 
       - name: get jq
@@ -79,7 +79,7 @@ jobs:
               "download_url": $url
             }
           ] + .' json/tmp-lin.json > json/latest-version-lin.json
-          cp json/latest-version-lin.json site/public/launcher/
+          cp json/latest-version-lin.json ${{ github.workspace }}/site/public/launcher/
           cd ${{ github.workspace }}
 
       - name: new ver-win
@@ -96,7 +96,7 @@ jobs:
               "download_url": $url
             }
           ] + .' json/tmp-win.json > json/latest-version-win.json
-          cp json/latest-version-win.json site/public/launcher/
+          cp json/latest-version-win.json ${{ github.workspace }}/site/public/launcher/
           cd ${{ github.workspace }}
 
       - name: new ver-mac
@@ -113,7 +113,7 @@ jobs:
               "download_url": $url
             }
           ] + .' json/tmp-mac.json > json/latest-version-mac.json
-          cp json/latest-version-mac.json site/public/launcher/
+          cp json/latest-version-mac.json ${{ github.workspace }}/site/public/launcher/
           cd ${{ github.workspace }}
 
       - name: push to website
