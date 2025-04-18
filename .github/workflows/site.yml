@@ -65,13 +65,13 @@ jobs:
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-Linux-Installer-en_US+${{ env.file_ver }}.deb" \
-             '.versions += [
+             '[
             {
               "version": $version,
               "changelog": $changelog,
               "download_url": $url
             }
-          ]' json/tmp-lin.json > json/latest-version-lin.json
+          ] + .versions' json/tmp-lin.json > json/latest-version-lin.json
           cp json/latest-version-lin.json site/public/launcher/
 
       - name: new ver-win
@@ -80,13 +80,13 @@ jobs:
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-Windows-Installer-en_US.exe" \
-             '.versions += [
+             '[
             {
               "version": $version,
               "changelog": $changelog,
               "download_url": $url
             }
-          ]' json/tmp-win.json > json/latest-version-win.json
+          ] + .versions' json/tmp-win.json > json/latest-version-win.json
           cp json/latest-version-win.json site/public/launcher/
 
       - name: new ver-mac
@@ -95,13 +95,13 @@ jobs:
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-macOS-en_US+${{ env.file_ver }}.dmg" \
-             '.versions += [
+             '[
             {
               "version": $version,
               "changelog": $changelog,
               "download_url": $url
             }
-          ]' json/tmp-mac.json > json/latest-version-mac.json
+          ] + .versions' json/tmp-mac.json > json/latest-version-mac.json
           cp json/latest-version-mac.json site/public/launcher/
 
       - name: push to website
