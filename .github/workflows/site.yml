@@ -28,7 +28,7 @@ jobs:
       - name: copy
         run: |
           git clone https://x-access-token:${{ secrets.WEBSITE_TOKEN }}@github.com/TheUnknownGroup/theunknowngroup.github.io.git site
-          cd site/public/
+          cd site/public/apps/
 
           if [ -d "launcher" ]; then
             echo "Exists"
@@ -41,75 +41,82 @@ jobs:
       - name: manual add
         if: ${{ contains(github.event.head_commit.message, '[man]' ) }}
         run:
-          mv json/tmp-lin.json json/latest-version-lin.json
+          mv json/launcher/tmp-lin.json json/launcher/latest-version-lin.json
           
-          mv json/tmp-win.json json/latest-version-win.json
+          mv json/launcher/tmp-win.json json/launcher/latest-version-win.json
           
-          mv json/tmp-mac.json json/latest-version-mac.json
+          mv json/launcher/tmp-mac.json json/launcher/latest-version-mac.json
           
-          cp json/latest-version-lin.json site/public/launcher/
+          cp json/launcher/latest-version-lin.json site/public/apps/launcher
           
-          cp json/latest-version-win.json site/public/launcher/
+          cp json/launcher/latest-version-win.json site/public/apps/launcher/
           
-          cp json/latest-version-mac.json site/public/launcher/
+          cp json/launcher/latest-version-mac.json site/public/apps/launcher/
 
       - name: get jq
-        if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
         run: |
           sudo apt-get update
           sudo apt-get install jq
 
       - name: new ver-lin
-        if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
+        if: ${{ contains(github.event.head_commit.message, '[newver-ukmcl]' ) }}
         run: |
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-Linux-Installer-en_US+${{ env.file_ver }}.deb" \
-             '[
+             '.versions |= [
             {
               "version": $version,
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .versions' json/tmp-lin.json > json/latest-version-lin.json
-          cp json/latest-version-lin.json site/public/launcher/
+          ] + .' json/launcher/tmp-lin.json > json/launcher/latest-version-lin.json
+          cp json/launcher/latest-version-lin.json site/public/apps/launcher/
 
       - name: new ver-win
-        if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
+        if: ${{ contains(github.event.head_commit.message, '[newver-ukmcl]' ) }}
         run: |
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-Windows-Installer-en_US.exe" \
-             '[
+             '.versions |= [
             {
               "version": $version,
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .versions' json/tmp-win.json > json/latest-version-win.json
-          cp json/latest-version-win.json site/public/launcher/
+          ] + .' json/launcher/tmp-win.json > json/launcher/latest-version-win.json
+          cp json/launcher/latest-version-win.json site/public/apps/launcher/
 
       - name: new ver-mac
-        if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
+        if: ${{ contains(github.event.head_commit.message, '[newver-ukmcl]' ) }}
         run: |
           jq --arg version "${{ env.ver }}" \
              --arg changelog "https://github.com/TheUnknownGroup/UKMCL/releases/tag/${{ env.ver_tag }}" \
              --arg url "${{ env.url }}${{ env.ver_tag }}/UKMCL-macOS-en_US+${{ env.file_ver }}.dmg" \
-             '[
+             '.versions |= [
             {
               "version": $version,
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .versions' json/tmp-mac.json > json/latest-version-mac.json
-          cp json/latest-version-mac.json site/public/launcher/
+          ] + .' json/launcher/tmp-mac.json > json/launcher/latest-version-mac.json
+          cp json/launcher/latest-version-mac.json site/public/apps/launcher/
 
       - name: push to website
         run: |
-          cd site/
+          mv json/launcher/latest-version-lin.json json/launcher/tmp-lin.json
+          mv json/launcher/latest-version-win.json json/launcher/tmp-win.json
+          mv json/launcher/latest-version-mac.json json/launcher/tmp-mac.json
+          
           git config user.name "devonk15"
           git config user.email "94760159+devonk15@users.noreply.github.com"
-          git add public/launcher/*.json
+          git add json/launcher/*.json
+          git commit -m "${{ env.commit_msg }}"
+          git push
+          
+          cd site/
+          git add public/apps/launcher/*.json
 
           if git diff --cached --quiet; then
             echo "No changes"
@@ -117,16 +124,4 @@ jobs:
             git commit -m "${{ env.commit_msg }}"
             git push
           fi
-
-      - name: push here
-        if: ${{ contains(github.event.head_commit.message, '[newver]' ) }}
-        run: |
-          mv json/latest-version-lin.json json/tmp-lin.json
-          mv json/latest-version-win.json json/tmp-win.json
-          mv json/latest-version-mac.json json/tmp-mac.json
-          
-          git config user.name "devonk15"
-          git config user.email "94760159+devonk15@users.noreply.github.com"
-          git add json/*.json
-          git commit -m "${{ env.commit_msg }}"
-          git push
+               
