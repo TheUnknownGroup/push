@@ -126,4 +126,3 @@ jobs:
             git commit -m "${{ env.commit_msg }}"
             git push
           fi
-        continue-on-error: true
