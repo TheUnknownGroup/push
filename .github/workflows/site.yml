@@ -41,17 +41,17 @@ jobs:
       - name: manual add
         if: ${{ contains(github.event.head_commit.message, '[man]' ) }}
         run:
-          mv json/launcher/tmp-lin.json json/launcher/latest-version-lin.json
+          mv json/launcher/tmp-lin.json json/launcher/beta-lin.json
           
-          mv json/launcher/tmp-win.json json/launcher/latest-version-win.json
+          mv json/launcher/tmp-win.json json/launcher/beta-win.json
           
-          mv json/launcher/tmp-mac.json json/launcher/latest-version-mac.json
+          mv json/launcher/tmp-mac.json json/launcher/beta-mac.json
           
-          cp json/launcher/latest-version-lin.json site/public/apps/launcher
+          cp json/launcher/beta-lin.json site/public/apps/launcher/
           
-          cp json/launcher/latest-version-win.json site/public/apps/launcher/
+          cp json/launcher/beta-win.json site/public/apps/launcher/
           
-          cp json/launcher/latest-version-mac.json site/public/apps/launcher/
+          cp json/launcher/beta-mac.json site/public/apps/launcher/
 
       - name: get jq
         run: |
@@ -70,8 +70,8 @@ jobs:
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .' json/launcher/tmp-lin.json > json/launcher/latest-version-lin.json
-          cp json/launcher/latest-version-lin.json site/public/apps/launcher/
+          ] + .' json/launcher/tmp-lin.json > json/launcher/beta-lin.json
+          cp json/launcher/beta-lin.json site/public/apps/launcher/
 
       - name: new ver-win
         if: ${{ contains(github.event.head_commit.message, '[newver-ukmcl]' ) }}
@@ -85,8 +85,8 @@ jobs:
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .' json/launcher/tmp-win.json > json/launcher/latest-version-win.json
-          cp json/launcher/latest-version-win.json site/public/apps/launcher/
+          ] + .' json/launcher/tmp-win.json > json/launcher/beta-win.json
+          cp json/launcher/beta-win.json site/public/apps/launcher/
 
       - name: new ver-mac
         if: ${{ contains(github.event.head_commit.message, '[newver-ukmcl]' ) }}
@@ -100,14 +100,14 @@ jobs:
               "changelog": $changelog,
               "download_url": $url
             }
-          ] + .' json/launcher/tmp-mac.json > json/launcher/latest-version-mac.json
-          cp json/launcher/latest-version-mac.json site/public/apps/launcher/
+          ] + .' json/launcher/tmp-mac.json > json/launcher/beta-mac.json
+          cp json/launcher/beta-mac.json site/public/apps/launcher/
 
-      - name: push to website
+      - name: push
         run: |
-          mv json/launcher/latest-version-lin.json json/launcher/tmp-lin.json
-          mv json/launcher/latest-version-win.json json/launcher/tmp-win.json
-          mv json/launcher/latest-version-mac.json json/launcher/tmp-mac.json
+          mv json/launcher/beta-lin.json json/launcher/tmp-lin.json
+          mv json/launcher/beta-win.json json/launcher/tmp-win.json
+          mv json/launcher/beta-mac.json json/launcher/tmp-mac.json
           
           git config user.name "devonk15"
           git config user.email "94760159+devonk15@users.noreply.github.com"
@@ -126,4 +126,4 @@ jobs:
             git commit -m "${{ env.commit_msg }}"
             git push
           fi
-               
+        continue-on-error: true
